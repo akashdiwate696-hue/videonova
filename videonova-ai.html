@@ -35,11 +35,11 @@ button{border:0;border-radius:10px;padding:12px 16px;background:var(--accent);co
 <button id="create">Scenes बनाएं</button>
 <button class="alt" id="clear">Clear</button>
 </div>
-<div class="notice">यह सरल संस्करण बिना API key और login के चलता है। यह scene list और image prompts बनाता है; AI images और MP4 video generation अभी इसमें शामिल नहीं हैं।</div>
+<label for="backend">Render Backend URL</label><input id="backend" type="url" placeholder="https://your-service.onrender.com" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#111c2c;color:var(--text)"><div class="notice">अपनी API Key यहाँ न डालें। Gemini Key Render Backend में सुरक्षित रहेगी।</div>
 </section>
 <section class="card" id="result">
 <h2>2. आपकी Scene List</h2>
-<div id="scenes"></div>
+<div id="scenes"></div><div class="buttons"><button id="images">सभी Scene Images Generate करें</button></div>
 <div class="buttons">
 <button id="download">Scene Plan डाउनलोड करें</button>
 <button class="alt" id="copy">सभी Prompts Copy करें</button>
@@ -50,7 +50,7 @@ button{border:0;border-radius:10px;padding:12px 16px;background:var(--accent);co
 </section>
 </main>
 <script>
-const $=id=>document.getElementById(id);let plan=[];
+const $=id=>document.getElementById(id);let plan=[]; $('backend').value=localStorage.getItem('vn_backend_url')||''; $('backend').addEventListener('change',()=>localStorage.setItem('vn_backend_url',$('backend').value.trim().replace(/\\/$/,'')));
 $('file').addEventListener('change',async e=>{const f=e.target.files[0];if(f)$('story').value=await f.text();});
 function splitStory(text){
  const parts=text.replace(/\r/g,' ').split(/(?<=[.!?।])\s+|\n+/).map(s=>s.trim()).filter(Boolean);
@@ -66,7 +66,7 @@ $('create').onclick=()=>{
  $('result').style.display='block';$('status').textContent=plan.length+' scenes तैयार हैं।';$('result').scrollIntoView({behavior:'smooth'});
 };
 $('clear').onclick=()=>{$('story').value='';$('file').value='';$('scenes').innerHTML='';$('result').style.display='none';plan=[];if('speechSynthesis'in window)speechSynthesis.cancel();};
-$('download').onclick=()=>{if(!plan.length)return;const text=plan.map((s,i)=>'SCENE '+(i+1)+'\n'+s.text+'\n\nIMAGE PROMPT\n'+s.prompt).join('\n\n--------------------\n\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));a.download='videonova-scene-plan.txt';a.click();URL.revokeObjectURL(a.href);};
+$('images').onclick=async()=>{if(!plan.length){$('status').textContent='पहले Scenes बनाएं।';return;}const base=$('backend').value.trim().replace(/\/$/,'');if(!base){$('status').textContent='पहले Render Backend URL डालें।';return;}const btn=$('images');btn.disabled=true;try{for(let i=0;i<plan.length;i++){const card=$('scenes').children[i];$('status').textContent='Scene '+(i+1)+' / '+plan.length+' की image बन रही है…';const r=await fetch(base+'/api/generate-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:plan[i].prompt})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Image API error '+r.status);const img=document.createElement('img');img.src='data:'+(d.mimeType||'image/png')+';base64,'+d.image;img.alt='Scene '+(i+1);img.style.cssText='width:100%;border-radius:10px;margin-top:10px';card.append(img);plan[i].image=img.src;} $('status').textContent='सभी '+plan.length+' images तैयार हैं।';}catch(e){$('status').textContent='Image generation failed: '+e.message;}finally{btn.disabled=false;}};\n$('download').onclick=()=>{if(!plan.length)return;const text=plan.map((s,i)=>'SCENE '+(i+1)+'\n'+s.text+'\n\nIMAGE PROMPT\n'+s.prompt).join('\n\n--------------------\n\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));a.download='videonova-scene-plan.txt';a.click();URL.revokeObjectURL(a.href);};
 $('copy').onclick=async()=>{if(!plan.length)return;const text=plan.map((s,i)=>'Scene '+(i+1)+': '+s.text+'\nImage Prompt: '+s.prompt).join('\n\n');try{await navigator.clipboard.writeText(text);$('status').textContent='सभी prompts copy हो गए।';}catch(e){$('status').textContent='Copy नहीं हुआ। Scene Plan डाउनलोड करें।';}};
 $('speak').onclick=()=>{if(!('speechSynthesis'in window)){ $('status').textContent='इस browser में voice support नहीं है।';return;}const t=$('story').value.trim();if(!t)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=/[\u0900-\u097F]/.test(t)?'hi-IN':'en-IN';speechSynthesis.speak(u);};
 $('stop').onclick=()=>{if('speechSynthesis'in window)speechSynthesis.cancel();};
