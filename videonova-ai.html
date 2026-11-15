@@ -1,175 +1,75 @@
 <!doctype html>
-<html lang="en">
+<html lang="hi">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b1020"><title>VideoNova AI — Story to Video</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>VideoNova AI — Story Studio</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1020;--panel:#141e33;--line:#2a3a58;--muted:#a8b5cf;--accent:#8b7cff;--cyan:#42d6d0}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#25224c 0,transparent 35%),var(--bg);color:#f3f5ff;font:15px/1.5 system-ui,Arial}
-header{padding:17px 5%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;background:#0b1020ee;position:sticky;top:0;z-index:4}
-.brand{font-size:22px;font-weight:850}.brand span{color:var(--accent)}.pill{font-size:11px;color:var(--cyan);border:1px solid #286b70;border-radius:30px;padding:5px 9px}
-main{max-width:1100px;margin:auto;padding:26px 16px 55px}.hero h1{font-size:clamp(28px,5vw,43px);margin:0 0 5px}.muted{color:var(--muted);font-size:13px}
-.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:17px;margin-top:20px}.card{background:linear-gradient(155deg,#17233b,#111a2d);border:1px solid var(--line);border-radius:17px;padding:17px;margin-bottom:16px;min-width:0}
-h2{font-size:17px;margin:0 0 12px}label{display:block;font-size:13px;color:#cbd5eb;margin:12px 0 5px}
-textarea,input[type=file],input[type=number]{width:100%;border:1px solid #344766;background:#0b1426;color:#f4f6ff;border-radius:10px;padding:11px;font:inherit}textarea{min-height:130px;resize:vertical}
-button{border:0;border-radius:10px;padding:11px 14px;background:var(--accent);color:white;font-weight:750;cursor:pointer}button.secondary{background:#263653;border:1px solid #3a4e70}button:disabled{opacity:.5;cursor:wait}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.status{background:#0d1729;border:1px solid var(--line);padding:10px 12px;border-radius:10px;margin-top:12px;color:var(--muted);font-size:13px;overflow-wrap:anywhere}
-.scene{display:grid;grid-template-columns:1fr 120px;gap:10px;padding:11px;border:1px solid var(--line);border-radius:12px;margin:9px 0;background:#0e182b}
-.scene img{width:100%;height:100px;object-fit:cover;border-radius:8px;background:#202b43}.scene p{margin:0;font-size:13px}.scene small{color:var(--muted)}
-.preview{aspect-ratio:16/9;background:#050914;border-radius:12px;display:grid;place-items:center;overflow:hidden;position:relative}.preview img{width:100%;height:100%;object-fit:contain}.preview span{position:absolute;bottom:0;left:0;right:0;padding:30px 12px 10px;background:linear-gradient(transparent,#000c);font-weight:700}
-a{color:#a89eff;font-weight:700}.good{color:#7ee4b1}.warn{color:#ffd17e}
-@media(max-width:760px){.grid{grid-template-columns:1fr}header{padding:14px 16px}}
-</style></head>
+:root{color-scheme:dark;--bg:#101827;--panel:#1a2638;--line:#34445c;--text:#f5f7fb;--muted:#aab7c9;--accent:#7c6cf2}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,Arial,sans-serif}
+header{padding:18px 16px;border-bottom:1px solid var(--line);font-size:22px;font-weight:800}header span{color:#a99cff}
+main{max-width:850px;margin:28px auto;padding:0 15px 50px}.intro h1{font-size:clamp(26px,6vw,38px);margin:0 0 6px}.muted{color:var(--muted);font-size:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:18px}
+label{display:block;margin:12px 0 6px;font-size:14px}textarea,input[type=file]{width:100%;padding:13px;border:1px solid var(--line);border-radius:10px;background:#111c2c;color:var(--text);font:inherit}textarea{min-height:180px;resize:vertical}
+button{border:0;border-radius:10px;padding:12px 16px;background:var(--accent);color:white;font-weight:700;font-size:15px;cursor:pointer}button.alt{background:#2b3b53;border:1px solid #455872}.buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.scene{border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:10px;background:#111c2c}.scene strong{color:#b9afff}.scene p{margin:6px 0}.prompt{font-size:13px;color:var(--muted);white-space:pre-wrap}
+#result{display:none}.notice{padding:11px;border-radius:10px;background:#111c2c;color:var(--muted);font-size:13px;margin-top:12px}
+@media(max-width:600px){main{margin-top:18px}.card{padding:14px}}
+</style>
+</head>
 <body>
-<header><div class="brand">VideoNova <span>AI</span></div><div class="pill">STORY TO VIDEO</div></header>
+<header>VideoNova <span>AI</span></header>
 <main>
-<section class="hero"><h1>Your story. Scene by scene. Into a video.</h1><div class="muted">Upload a script, authorize image generation, and build a complete visual story video.</div></section>
-<div class="grid"><div>
-<section class="card">
-<h2>1 · Connect image generation</h2>
-<p class="muted">Connect Pollinations securely. Approve image + audio access to generate scene pictures and Hindi narration. Generation may use your Pollen balance according to the budget you approve.</p>
-<div class="actions"><button id="connect">Connect Pollinations</button><button id="disconnect" class="secondary">Disconnect</button></div>
-<div id="authStatus" class="status">Not connected. Connect before generating images.</div>
+<section class="intro">
+<h1>अपनी कहानी को Scene में बदलें</h1>
+<div class="muted">कहानी डालें, अपने आप scenes और image prompts तैयार करें।</div>
 </section>
 <section class="card">
-<h2>2 · Upload or paste your complete script</h2>
-<label for="scriptFile">Script file (.txt or .md)</label><input id="scriptFile" type="file" accept=".txt,.md,text/plain">
-<label for="script">Or paste script here</label><textarea id="script" placeholder="Paste your full story here. Each sentence will be arranged into visual scenes."></textarea>
-<div class="actions"><button id="makeVideo">Generate images + final video</button><button id="clear" class="secondary">Clear</button></div>
-<div id="progress" class="status">Waiting for your script.</div>
+<h2>1. अपनी कहानी डालें</h2>
+<label for="file">कहानी की फ़ाइल चुनें (.txt)</label>
+<input id="file" type="file" accept=".txt,.md,text/plain">
+<label for="story">या यहाँ कहानी paste करें</label>
+<textarea id="story" placeholder="अपनी पूरी कहानी यहाँ लिखें या paste करें..."></textarea>
+<div class="buttons">
+<button id="create">Scenes बनाएं</button>
+<button class="alt" id="clear">Clear</button>
+</div>
+<div class="notice">यह सरल संस्करण बिना API key और login के चलता है। यह scene list और image prompts बनाता है; AI images और MP4 video generation अभी इसमें शामिल नहीं हैं।</div>
 </section>
-<section class="card">
-<h2>3 · Scene images</h2><div id="scenes" class="muted">Your generated scene images will appear here.</div>
+<section class="card" id="result">
+<h2>2. आपकी Scene List</h2>
+<div id="scenes"></div>
+<div class="buttons">
+<button id="download">Scene Plan डाउनलोड करें</button>
+<button class="alt" id="copy">सभी Prompts Copy करें</button>
+<button class="alt" id="speak">कहानी सुनें</button>
+<button class="alt" id="stop">Stop</button>
+</div>
+<div id="status" class="notice" aria-live="polite"></div>
 </section>
-</div><div>
-<section class="card">
-<h2>4 · Preview and export</h2><div class="preview" id="preview"><div class="muted">Your video preview will appear here.</div></div>
-<label for="seconds">Seconds per scene</label><input id="seconds" type="number" min="2" max="12" value="4">
-<div class="actions"><button id="export" disabled>Create voice + final video (WebM)</button></div>
-<label for="voice">Hindi narration voice</label><select id="voice" style="width:100%;border:1px solid #344766;background:#0b1426;color:#f4f6ff;border-radius:10px;padding:11px;font:inherit"><option value="onyx">Male — Onyx</option><option value="echo">Male — Echo</option><option value="nova">Female — Nova</option><option value="shimmer">Female — Shimmer</option></select><div id="exportStatus" class="status">Generate your scene images first.</div>
-<a id="download" hidden download="videonova-story.webm">Download final video</a>
-</section>
-<section class="card">
-<h2>5 · Voice preview</h2>
-<label for="voiceText">Narration text</label><textarea id="voiceText" placeholder="Your script will be copied here."></textarea>
-<div class="actions"><button id="speak" class="secondary">Listen to device voice</button><button id="stop" class="secondary">Stop</button></div>
-<p class="muted">This is a browser voice preview, not a generated narration track in the exported video.</p>
-</section>
-<section class="card">
-<h2>How it works</h2>
-<p class="muted">The script is split into sentence-based scenes. Images are generated one at a time with retry handling. After generation, export creates a 720p WebM slideshow with scene captions.</p>
-<p class="muted">The browser-only build does not need a private server key. Your Pollinations authorization token stays in this tab's session storage and is not written into the page source.</p>
-</section>
-</div></div>
 </main>
 <script>
-const APP_KEY='pk_iDqd2rXI79vNKvO0';
-const REDIRECT_URI='https://akashdiwate696-hue.github.io/videonova/videonova-ai.html';
-const $=id=>document.getElementById(id);
-let scenes=[],token=sessionStorage.getItem('vn_polli_token')||'',previewIndex=0;
-function sayAuth(){ $('authStatus').innerHTML=token?'<span class="good">Connected for this browser tab.</span> Your temporary authorization is stored in session storage.':'Not connected. Select Connect Pollinations.'; }
-function b64url(bytes){return btoa(String.fromCharCode.apply(null,new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
-async function connect(){
- const random=new Uint8Array(32);crypto.getRandomValues(random);const verifier=b64url(random);
- const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier));
- const challenge=b64url(digest);const state=b64url(crypto.getRandomValues(new Uint8Array(24)));
- sessionStorage.setItem('vn_pkce_verifier',verifier);sessionStorage.setItem('vn_oauth_state',state);
- const params=new URLSearchParams({response_type:'code',client_id:APP_KEY,redirect_uri:REDIRECT_URI,scope:'profile usage',models:'image,audio',expiry:'7',budget:'10',state:state,code_challenge:challenge,code_challenge_method:'S256'});
- location.href='https://enter.pollinations.ai/authorize?'+params.toString();
+const $=id=>document.getElementById(id);let plan=[];
+$('file').addEventListener('change',async e=>{const f=e.target.files[0];if(f)$('story').value=await f.text();});
+function splitStory(text){
+ const parts=text.replace(/\r/g,' ').split(/(?<=[.!?।])\s+|\n+/).map(s=>s.trim()).filter(Boolean);
+ const scenes=[];let group='';
+ for(const sentence of parts){if(group&&(group.length+sentence.length+1>220)){scenes.push(group);group='';}group+=(group?' ':'')+sentence;}
+ if(group)scenes.push(group);return scenes;
 }
-async function finishOAuth(){
- const u=new URL(location.href),code=u.searchParams.get('code'),state=u.searchParams.get('state'),error=u.searchParams.get('error');
- if(error){$('authStatus').textContent='Authorization failed: '+(u.searchParams.get('error_description')||error);history.replaceState({},'',REDIRECT_URI);return;}
- if(!code)return;
- const expected=sessionStorage.getItem('vn_oauth_state'),verifier=sessionStorage.getItem('vn_pkce_verifier');
- if(!expected||state!==expected||!verifier){$('authStatus').textContent='Security check failed. Please connect again.';history.replaceState({},'',REDIRECT_URI);return;}
- try{
-  $('authStatus').textContent='Completing secure Pollinations connection…';
-  const response=await fetch('https://enter.pollinations.ai/api/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',code:code,client_id:APP_KEY,redirect_uri:REDIRECT_URI,code_verifier:verifier})});
-  const data=await response.json();if(!response.ok||!data.access_token)throw new Error(data.error_description||data.error||('Token exchange failed ('+response.status+')'));
-  token=data.access_token;sessionStorage.setItem('vn_polli_token',token);sessionStorage.removeItem('vn_pkce_verifier');sessionStorage.removeItem('vn_oauth_state');
-  history.replaceState({},'',REDIRECT_URI);sayAuth();
- }catch(e){$('authStatus').textContent='Connection error: '+e.message+'. Check that this exact redirect URL is registered in your Pollinations App Key settings.';history.replaceState({},'',REDIRECT_URI);}
-}
-function splitScript(raw){
- const sentences=raw.replace(/\r/g,' ').split(/(?<=[.!?।])\s+|\n+/).map(x=>x.trim()).filter(Boolean);
- const out=[];let part='';
- for(const s of sentences){if(part&&(part.length+s.length+1>190||part.split(/\s+/).length>38)){out.push(part);part='';}part+=(part?' ':'')+s;}
- if(part)out.push(part);return out;
-}
-function renderScenes(){
- $('scenes').innerHTML='';
- scenes.forEach((s,i)=>{const d=document.createElement('div');d.className='scene';const left=document.createElement('div');const p=document.createElement('p');p.textContent='Scene '+(i+1)+': '+s.text;const small=document.createElement('small');small.textContent=s.status||'Waiting';left.append(p,small);const img=document.createElement('img');img.alt='Scene '+(i+1);if(s.url)img.src=s.url;else img.alt='Image pending';d.append(left,img);$('scenes').append(d);});
-}
-async function generateSpeech(text,voice){\n const response=await fetch('https://gen.pollinations.ai/v1/audio/speech',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({model:'openai/tts-1',input:text,voice:voice,response_format:'mp3'})});\n if(!response.ok){const detail=await response.text().catch(()=> '');throw new Error('Voice API '+response.status+' '+detail.slice(0,160));}\n const blob=await response.blob();if(!blob.type.startsWith('audio/'))throw new Error('Voice service did not return audio.');return URL.createObjectURL(blob);\n}\nfunction promptFor(s,full){return 'Create one cinematic 16:9 storyboard frame. Show only this story moment: '+s+'. Overall story context for character and visual continuity: '+full.slice(0,1200)+'. Keep recurring characters, clothing, age and visual style consistent. Clear expressive subjects, detailed environment, cinematic lighting, realistic composition. No text, no collage, one frame.';}
-async function generateOne(s,i,full){
- const prompt=promptFor(s.text,full);
- const url='https://gen.pollinations.ai/image/'+encodeURIComponent(prompt)+'?model=black-forest-labs/flux.1-schnell&width=1280&height=720&seed='+(4210+i);
- let last='Unknown error';
- for(let attempt=1;attempt<=3;attempt++){
-  try{
-   const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),120000);
-   const r=await fetch(url,{headers:{Authorization:'Bearer '+token},signal:controller.signal});clearTimeout(timer);
-   if(!r.ok){const detail=await r.text().catch(()=> '');throw new Error('Image API '+r.status+' '+detail.slice(0,180));}
-   const blob=await r.blob();if(!blob.type.startsWith('image/'))throw new Error('Provider did not return an image.');
-   return URL.createObjectURL(blob);
-  }catch(e){last=e.name==='AbortError'?'Image request timed out':e.message;if(attempt<3)await new Promise(r=>setTimeout(r,1500*attempt));}
- }
- throw new Error(last);
-}
-async function make(){
- const full=$('script').value.trim();if(!full){alert('Please upload or paste your complete script first.');return;}
- if(!token){alert('First connect Pollinations and approve the image permission.');return;}
- scenes.forEach(s=>{if(s.url)URL.revokeObjectURL(s.url);});
- scenes=splitScript(full).map((text)=>({text:text,url:'',audioUrl:'',status:'Waiting'}));$('voiceText').value=full;renderScenes();$('export').disabled=true;$('download').hidden=true;
- for(let i=0;i<scenes.length;i++){
-  scenes[i].status='Generating image…';renderScenes();$('progress').textContent='Generating scene '+(i+1)+' of '+scenes.length+'…';
-  try{scenes[i].url=await generateOne(scenes[i],i,full);scenes[i].status='Image ready';}
-  catch(e){scenes[i].status='Failed: '+e.message;$('progress').textContent='Scene '+(i+1)+' failed: '+e.message+' You can retry the full generation.';renderScenes();return;}
-  renderScenes();showPreview(i);
- }
- $('progress').innerHTML='<span class="good">All '+scenes.length+' scene images generated. Ready for narration and export.</span>';$('export').disabled=false;$('exportStatus').textContent='Scene images ready. Tap Create voice + final video to generate Hindi narration and sync it.';
-}
-function showPreview(i){if(!scenes.length)return;previewIndex=Math.max(0,Math.min(i,scenes.length-1));const s=scenes[previewIndex];$('preview').innerHTML='';if(s.url){const img=document.createElement('img');img.src=s.url;$('preview').append(img);}const cap=document.createElement('span');cap.textContent=s.text;$('preview').append(cap);}
-async function exportVideo(){
- if(!scenes.length||scenes.some(s=>!s.url)){alert('Generate all scene images successfully first.');return;}
- if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){$('exportStatus').textContent='This browser does not support WebM video export. Try a recent Chrome browser.';return;}
- $('export').disabled=true;$('download').hidden=true;
- try{
-  const voice=$('voice').value;
-  for(let i=0;i<scenes.length;i++){
-   $('exportStatus').textContent='Generating Hindi voice: scene '+(i+1)+' of '+scenes.length+'…';
-   if(scenes[i].audioUrl)URL.revokeObjectURL(scenes[i].audioUrl);
-   scenes[i].audioUrl=await generateSpeech(scenes[i].text,voice);
-  }
-  const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=720;const ctx=canvas.getContext('2d');
-  const stream=canvas.captureStream(30);const audioContext=new (window.AudioContext||window.webkitAudioContext)();await audioContext.resume();
-  const audioDestination=audioContext.createMediaStreamDestination();audioDestination.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
-  const mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));
-  if(!mime)throw new Error('WebM recording is not supported in this browser.');
-  const recorder=new MediaRecorder(stream,{mimeType:mime}),parts=[];recorder.ondataavailable=e=>{if(e.data.size)parts.push(e.data);};
-  const done=new Promise(resolve=>recorder.onstop=resolve);recorder.start();
-  for(let i=0;i<scenes.length;i++){
-   $('exportStatus').textContent='Syncing image + Hindi narration: scene '+(i+1)+' of '+scenes.length+'…';
-   const img=new Image();img.src=scenes[i].url;await img.decode();
-   ctx.fillStyle='#050914';ctx.fillRect(0,0,1280,720);const scale=Math.min(1280/img.width,720/img.height),w=img.width*scale,h=img.height*scale;ctx.drawImage(img,(1280-w)/2,(720-h)/2,w,h);
-   ctx.fillStyle='rgba(0,0,0,.68)';ctx.fillRect(0,565,1280,155);ctx.fillStyle='#fff';ctx.font='bold 27px system-ui';ctx.textAlign='left';
-   const words=scenes[i].text.split(/\s+/);let line='',lines=[];for(const word of words){const test=(line+' '+word).trim();if(ctx.measureText(test).width>1150){lines.push(line);line=word;}else line=test;}if(line)lines.push(line);lines.slice(0,3).forEach((l,j)=>ctx.fillText(l,55,615+j*38));
-   const audio=new Audio(scenes[i].audioUrl);audio.preload='auto';const source=audioContext.createMediaElementSource(audio);source.connect(audioDestination);source.connect(audioContext.destination);
-   await new Promise((resolve,reject)=>{audio.onended=resolve;audio.onerror=()=>reject(new Error('Could not play narration for scene '+(i+1)));audio.play().catch(reject);});
-   source.disconnect();audio.remove();
-  }
-  recorder.stop();await done;stream.getTracks().forEach(t=>t.stop());await audioContext.close();
-  const blob=new Blob(parts,{type:'video/webm'}),href=URL.createObjectURL(blob);$('download').href=href;$('download').hidden=false;$('download').download='videonova-story-with-hindi-voice.webm';$('download').textContent='Download final video ('+(blob.size/1048576).toFixed(1)+' MB)';$('exportStatus').innerHTML='<span class="good">Final video with synced narration is ready.</span> WebM format · '+(blob.size/1048576).toFixed(1)+' MB';$('download').click();
- }catch(e){$('exportStatus').textContent='Video creation failed: '+e.message+'. Check your audio permission, Pollen balance and try again.';}
- $('export').disabled=false;
-}
-$('connect').onclick=()=>connect().catch(e=>$('authStatus').textContent='Could not start secure connection: '+e.message);
-$('disconnect').onclick=()=>{token='';sessionStorage.removeItem('vn_polli_token');sayAuth();};
-$('scriptFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;$('script').value=await f.text();};
-$('makeVideo').onclick=make;$('export').onclick=exportVideo;
-$('clear').onclick=()=>{$('script').value='';$('voiceText').value='';scenes.forEach(s=>{if(s.url)URL.revokeObjectURL(s.url);if(s.audioUrl)URL.revokeObjectURL(s.audioUrl);});scenes=[];renderScenes();$('progress').textContent='Waiting for your script.';$('export').disabled=true;};
-$('speak').onclick=()=>{const t=$('voiceText').value.trim();if(!t)return;if(!('speechSynthesis'in window)){alert('Speech preview is not supported in this browser.');return;}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=/[\u0900-\u097F]/.test(t)?'hi-IN':'en-US';speechSynthesis.speak(u);};
+function makePrompt(text,i){return 'Create a cinematic 16:9 story illustration for scene '+(i+1)+'. Show this exact moment: '+text+'. Keep the same character appearance and clothing consistent across all scenes. Rich detailed background, expressive characters, cinematic lighting, no text, no collage.';}
+$('create').onclick=()=>{
+ const story=$('story').value.trim();if(!story){$('status').textContent='पहले अपनी कहानी लिखें या फ़ाइल चुनें।';$('result').style.display='block';return;}
+ plan=splitStory(story).map((text,i)=>({text,prompt:makePrompt(text,i)}));
+ $('scenes').innerHTML='';plan.forEach((s,i)=>{const card=document.createElement('div');card.className='scene';const title=document.createElement('strong');title.textContent='Scene '+(i+1);const p=document.createElement('p');p.textContent=s.text;const prompt=document.createElement('div');prompt.className='prompt';prompt.textContent='Image Prompt: '+s.prompt;card.append(title,p,prompt);$('scenes').append(card);});
+ $('result').style.display='block';$('status').textContent=plan.length+' scenes तैयार हैं।';$('result').scrollIntoView({behavior:'smooth'});
+};
+$('clear').onclick=()=>{$('story').value='';$('file').value='';$('scenes').innerHTML='';$('result').style.display='none';plan=[];if('speechSynthesis'in window)speechSynthesis.cancel();};
+$('download').onclick=()=>{if(!plan.length)return;const text=plan.map((s,i)=>'SCENE '+(i+1)+'\n'+s.text+'\n\nIMAGE PROMPT\n'+s.prompt).join('\n\n--------------------\n\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));a.download='videonova-scene-plan.txt';a.click();URL.revokeObjectURL(a.href);};
+$('copy').onclick=async()=>{if(!plan.length)return;const text=plan.map((s,i)=>'Scene '+(i+1)+': '+s.text+'\nImage Prompt: '+s.prompt).join('\n\n');try{await navigator.clipboard.writeText(text);$('status').textContent='सभी prompts copy हो गए।';}catch(e){$('status').textContent='Copy नहीं हुआ। Scene Plan डाउनलोड करें।';}};
+$('speak').onclick=()=>{if(!('speechSynthesis'in window)){ $('status').textContent='इस browser में voice support नहीं है।';return;}const t=$('story').value.trim();if(!t)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=/[\u0900-\u097F]/.test(t)?'hi-IN':'en-IN';speechSynthesis.speak(u);};
 $('stop').onclick=()=>{if('speechSynthesis'in window)speechSynthesis.cancel();};
-sayAuth();finishOAuth();
-</script></body></html>
+</script>
+</body>
+</html>
